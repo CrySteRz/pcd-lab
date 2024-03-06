@@ -50,3 +50,9 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+/Tema_1/build/
+/Tema_2/build/
+/Tema_1/cmake-build-debug/
+/Tema_2/cmake-build-debug/
+/Tema_1/.idea/
+/Tema_2/.idea/
