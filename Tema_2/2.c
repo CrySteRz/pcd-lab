@@ -18,44 +18,54 @@
 #include <sys/wait.h> // Wait functions for process synchronization (wait).
 #include <string.h>  // String handling functions, such as strcmp.
 
-// Function to create a specified number of child processes and their subprocesses.
+// Function to create a specified number of child processes, each with a specified number of subchildren.
 void createproc(int n, int s) {
+    // Loop to create n child processes
     for (int i = 1; i <= n; ++i) {
-        pid_t pid = fork(); // Create a new process.
+        // Fork a new process
+        pid_t pid = fork();
+        // If fork fails, print an error and exit
         if (pid == -1) {
-            perror("fork"); // If fork fails, output the error and exit.
+            perror("fork");
             exit(EXIT_FAILURE);
         } else if (pid == 0) {
             // This block is executed by the child process.
-            printf("Proces[%d] PID %d PPID %d\n", i, getpid(), getppid()); // Print child's PID and PPID.
+            printf("Process[%d] PID %d PPID %d\n", i, getpid(), getppid());
 
-            // For each child process, create the specified number of subprocesses.
+            // Subchildren creation loop
+            pid_t lastSubPid;
             for (int j = 1; j <= s; ++j) {
-                pid_t subpid = fork();
-                if (subpid == -1) {
-                    perror("fork"); // If fork fails, output the error and exit.
+                lastSubPid = fork();
+                if (lastSubPid == -1) {
+                    perror("fork");
                     exit(EXIT_FAILURE);
-                } else if (subpid == 0) {
-                    // This block is executed by the subprocess.
-                    printf("Proces[%d.%d] PID %d PPID %d\n", i, j, getpid(), getppid());
-                    exit(EXIT_SUCCESS); // Subprocess exits successfully.
+                } else if (lastSubPid == 0) {
+                    // This block is executed by the subchild process.
+                    printf("Process[%d.%d] PID %d PPID %d\n", i, j, getpid(), getppid());
+                    // No further subprocesses are created if this is the last one
+                    if (j == s) exit(EXIT_SUCCESS);
                 } else {
-                    wait(NULL); // Parent (child process) waits for the subprocess to finish.
+                    // The parent (child of the original process) waits for its children to finish
+                    wait(NULL);
+                    // Then it exits successfully
+                    exit(EXIT_SUCCESS);
                 }
             }
-
-            exit(EXIT_SUCCESS); // Child process exits successfully.
+            // After all subchildren have been created, the child process exits.
+            exit(EXIT_SUCCESS);
         } else {
-            wait(NULL); // Original parent process waits for the child to finish.
+            // The original parent process waits for all its children to finish
+            wait(NULL);
         }
     }
 }
 
-// Main function: entry point of the program.
+// Main function: entry point of the program
 int main(int argc, char *argv[]) {
-    int n = 0, s = 0; // Initialize variables for number of processes and subprocesses.
+    // Initialize process and subprocess counters
+    int n = 0, s = 0;
 
-    // Parse command-line arguments for both number of processes and subprocesses.
+    // Parse command line arguments for --processes and --subprocesses flags
     for (int i = 1; i < argc; i += 2) {
         if (strcmp(argv[i], "--processes") == 0) {
             n = atoi(argv[i + 1]);
@@ -64,42 +74,50 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    // Validate the input to ensure positive integers for processes and subprocesses.
-    if (n <= 0 || s < 0) {
+    // If n or s is not specified or is zero, print error message and exit
+    if (n <= 0 || s <= 0) {
         fprintf(stderr, "Error! Usage: %s --processes <num> --subprocesses <num>\n", argv[0]);
         exit(EXIT_FAILURE);
     }
 
-    // Print the PID and PPID of the current (parent) process, which is 'Proces[A]'.
-    printf("Proces[A] PID %d PPID %d\n", getpid(), getppid());
+    // Print the parent process ID (Process A)
+    printf("Process[A] PID %d PPID %d\n", getpid(), getppid());
 
-    // Fork to create the 'Proces[B]' child process.
+    // Fork to create Process B
     pid_t pid_b = fork();
     if (pid_b == -1) {
-        perror("fork"); // If fork fails, output the error and exit.
+        // If fork fails, print an error and exit
+        perror("fork");
         exit(EXIT_FAILURE);
     } else if (pid_b == 0) {
-        // This block is executed by the child process 'Proces[B]'.
-        printf("Proces[B] PID %d PPID %d\n", getpid(), getppid());
+        // Print Process B's PID and PPID
+        printf("Process[B] PID %d PPID %d\n", getpid(), getppid());
 
-        // Fork again to create the 'Proces[0]' child process.
+        // Fork to create Process D
         pid_t pid_d = fork();
         if (pid_d == -1) {
-            perror("fork"); // If fork fails, output the error and exit.
+            perror("fork");
             exit(EXIT_FAILURE);
         } else if (pid_d == 0) {
-            // This block is executed by the child process 'Proces[0]'.
-            printf("Proces[0] PID %d PPID %d\n", getpid(), getppid());
-            createproc(n, s); // Create the remaining child processes and their subprocesses.
-            exit(EXIT_SUCCESS); // 'Proces[0]' child process exits successfully.
+            // Print Process D's PID and PPID
+            printf("Process[0] PID %d PPID %d\n", getpid(), getppid());
+            // Process D creates the specified number of child processes with subchildren
+            createproc(n, s);
+            // Then exits successfully
+            exit(EXIT_SUCCESS);
         } else {
-            wait(NULL); // Parent 'Proces[B]' waits for 'Proces[0]' to finish.
+            // Process B waits for Process D to finish
+            wait(NULL);
         }
-        exit(EXIT_SUCCESS); // 'Proces[B]' child process exits successfully.
+
+        // Process B then exits successfully
+        exit(EXIT_SUCCESS);
     } else {
-        wait(NULL); // The original parent process waits for 'Proces[B]' to finish.
+        // The original parent process waits for Process B to finish
+        wait(NULL);
     }
 
+    // The program exits successfully
     return EXIT_SUCCESS;
 }
 
@@ -111,24 +129,18 @@ int main(int argc, char *argv[]) {
 Error! Usage: ./2 --processes <num> --subprocesses <num>
 
  ./2 --processes 2
-Proces[A] PID 10294 PPID 3985
-Proces[B] PID 10295 PPID 10294
-Proces[0] PID 10296 PPID 10295
-Proces[1] PID 10297 PPID 10296
-Proces[2] PID 10298 PPID 10296
-
+Error! Usage: ./2 --processes <num> --subprocesses <num>
 
  ./2 --processes 2 --subprocesses 2
-Proces[A] PID 10283 PPID 3985
-Proces[B] PID 10284 PPID 10283
-Proces[0] PID 10285 PPID 10284
-Proces[1] PID 10286 PPID 10285
-Proces[1.1] PID 10287 PPID 10286
-Proces[1.2] PID 10288 PPID 10286
-Proces[2] PID 10289 PPID 10285
-Proces[2.1] PID 10290 PPID 10289
-Proces[2.2] PID 10291 PPID 10289
-
+Process[A] PID 9200 PPID 7665
+Process[B] PID 9201 PPID 9200
+Process[0] PID 9202 PPID 9201
+Process[1] PID 9203 PPID 9202
+Process[1.1] PID 9204 PPID 9203
+Process[1.2] PID 9205 PPID 9204
+Process[2] PID 9206 PPID 9202
+Process[2.1] PID 9207 PPID 9206
+Process[2.2] PID 9208 PPID 9207
 
  ./2 --processes abc --subprocesses -1
 Error! Usage: ./2 --processes <num> --subprocesses <num>
@@ -137,32 +149,28 @@ Error! Usage: ./2 --processes <num> --subprocesses <num>
 Error! Usage: ./2 --processes <num> --subprocesses <num>
 
 ./2 --processes 3 --subprocesses 2
-Proces[A] PID 10316 PPID 3985
-Proces[B] PID 10317 PPID 10316
-Proces[0] PID 10318 PPID 10317
-Proces[1] PID 10319 PPID 10318
-Proces[1.1] PID 10320 PPID 10319
-Proces[1.2] PID 10321 PPID 10319
-Proces[2] PID 10322 PPID 10318
-Proces[2.1] PID 10323 PPID 10322
-Proces[2.2] PID 10324 PPID 10322
-Proces[3] PID 10325 PPID 10318
-Proces[3.1] PID 10326 PPID 10325
-Proces[3.2] PID 10327 PPID 10325
+Process[A] PID 9215 PPID 7665
+Process[B] PID 9216 PPID 9215
+Process[0] PID 9217 PPID 9216
+Process[1] PID 9218 PPID 9217
+Process[1.1] PID 9219 PPID 9218
+Process[1.2] PID 9220 PPID 9219
+Process[2] PID 9221 PPID 9217
+Process[2.1] PID 9222 PPID 9221
+Process[2.2] PID 9223 PPID 9222
+Process[3] PID 9224 PPID 9217
+Process[3.1] PID 9225 PPID 9224
+Process[3.2] PID 9226 PPID 9225
 
 
  ./2 --processes 2 --subprocesses 0
-Proces[A] PID 10336 PPID 3985
-Proces[B] PID 10337 PPID 10336
-Proces[0] PID 10338 PPID 10337
-Proces[1] PID 10339 PPID 10338
-Proces[2] PID 10340 PPID 10338
+Error! Usage: ./2 --processes <num> --subprocesses <num>
 
 
  ./2 --processes 1 --subprocesses 1
-Proces[A] PID 10346 PPID 3985
-Proces[B] PID 10347 PPID 10346
-Proces[0] PID 10348 PPID 10347
-Proces[1] PID 10349 PPID 10348
-Proces[1.1] PID 10350 PPID 10349
+Process[A] PID 9237 PPID 7665
+Process[B] PID 9238 PPID 9237
+Process[0] PID 9239 PPID 9238
+Process[1] PID 9240 PPID 9239
+Process[1.1] PID 9241 PPID 9240
  */
