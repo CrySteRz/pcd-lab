@@ -9,9 +9,14 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="db68096e-9dcf-4475-9d53-8ac1425a2394" name="Changes" comment="">
+    <list default="true" id="db68096e-9dcf-4475-9d53-8ac1425a2394" name="Changes" comment="Fixed 2.c to work as intended">
+      <change afterPath="$PROJECT_DIR$/Tema_3/Part_1/execl.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Tema_3/Part_1/execle.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Tema_3/Part_1/execlp.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Tema_3/Part_1/execv.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Tema_3/Part_1/execve.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Tema_3/Part_1/execvp.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tema_2/2.c" beforeDir="false" afterPath="$PROJECT_DIR$/Tema_2/2.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,6 +36,9 @@
   &quot;associatedIndex&quot;: 1
 }</component>
   <component name="ProjectId" id="2dJcngGo8rSG4mO7roi9VdmP4JP" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -50,6 +58,8 @@
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;structure.view.defaults.are.configured&quot;: &quot;true&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -63,11 +73,26 @@
       <updated>1709729789376</updated>
       <workItem from="1709729790445" duration="1128000" />
       <workItem from="1709803863115" duration="15000" />
-      <workItem from="1709803997994" duration="1433000" />
+      <workItem from="1709803997994" duration="1845000" />
+      <workItem from="1710447193284" duration="440000" />
+      <workItem from="1710447643563" duration="1400000" />
     </task>
+    <task id="LOCAL-00001" summary="Fixed 2.c to work as intended">
+      <option name="closed" value="true" />
+      <created>1709805553674</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1709805553674</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Fixed 2.c to work as intended" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed 2.c to work as intended" />
   </component>
 </project>
